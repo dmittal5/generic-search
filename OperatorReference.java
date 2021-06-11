@@ -23,14 +23,15 @@ public class OperatorReference<T> implements CustomOperator<T> {
         if (op instanceof OpAnd) return Specification.where(specLeft).and(specRight);
         if (op instanceof OpOr) return Specification.where(specLeft).or(specRight);
         String colName = ((PropertyOrFieldReference)node.getChild(0)).getName();
-        String valueStr = getValueString(node.getChild(1));
+        Object valueStr = getValueString(node.getChild(1));
         return converter.apply(new SearchCriteria(colName, op.getOperatorName(), valueStr));
     }
 
-    private String getValueString(SpelNode valueNode) {
+    private Object getValueString(SpelNode valueNode) {
         if(valueNode instanceof StringLiteral){
-            return (String) ((Literal) valueNode).getLiteralValue().getValue();
+            return ((StringLiteral) valueNode).getLiteralValue().getValue();
         }
-        return valueNode.toStringAST();
+//        return valueNode.toStringAST();
+        return ((Literal) valueNode).getLiteralValue().getValue();
     }
 }

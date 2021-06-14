@@ -24,13 +24,13 @@ public class SpelExSpec<T> {
     public Specification<T> evaluate(String expressionString){
         ExpressionParser parser = new SpelExpressionParser();
         Expression expression = parser.parseExpression(expressionString);
-        return buildSpec(((SpelExpression)expression).getAST());
+        return buildSpecificationfromAST(((SpelExpression)expression).getAST());
     }
 
-    public Specification<T> buildSpec(SpelNode node){
+    public Specification<T> buildSpecificationfromAST(SpelNode node){
         if(node.getChildCount() == 0 || node instanceof MethodReference) return null;
-        Specification<T> specLeft = buildSpec(node.getChild(0));
-        Specification<T> specRight = buildSpec(node.getChild(1));
+        Specification<T> specLeft = buildSpecificationfromAST(node.getChild(0));
+        Specification<T> specRight = buildSpecificationfromAST(node.getChild(1));
         return operatorFactory.getCustomOperator(node).getSpecification(node, specLeft, specRight);
     }
 

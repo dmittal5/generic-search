@@ -28,10 +28,9 @@ public class OperatorReference<T> implements CustomOperator<T> {
     }
 
     private Object getValueString(SpelNode valueNode) {
-        if(valueNode instanceof StringLiteral){
-            return ((StringLiteral) valueNode).getLiteralValue().getValue();
+        if(valueNode instanceof Literal){
+            return ((Literal) valueNode).getLiteralValue().getValue(); //boolean support
         }
-//        return valueNode.toStringAST();
-        return ((Literal) valueNode).getLiteralValue().getValue();
+        return valueNode.toStringAST();
     }
 }

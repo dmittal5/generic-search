@@ -30,13 +30,25 @@ public class SpelSpecification<T> implements Specification<T> {
     @Override
     public Predicate toPredicate(final Root<T> root, final CriteriaQuery<?> query, final CriteriaBuilder builder) {
         if(criteria.getOperator().equals("==")){
-            return builder.equal(root.get(criteria.getKey()), criteria.getValue());
+            if(root.get(criteria.getKey()).getJavaType().getSuperclass() == Number.class){
+                return builder.equal(root.get(criteria.getKey()), ((Number)criteria.getValue()).doubleValue());
+            }
+            if(root.get(criteria.getKey()).getJavaType() == Boolean.class){
+                return builder.equal(root.get(criteria.getKey()), criteria.getValue());
+            }
+            return builder.equal(root.get(criteria.getKey()).as(String.class), String.valueOf(criteria.getValue()));
         }
         if(criteria.getOperator().equals(">")){
-            return builder.greaterThan(root.get(criteria.getKey()), String.valueOf(criteria.getValue()));
+            if(root.get(criteria.getKey()).getJavaType().getSuperclass() == Number.class){
+                return builder.greaterThan(root.get(criteria.getKey()), ((Number)criteria.getValue()).doubleValue());
+            }
+            return builder.greaterThan(root.get(criteria.getKey()).as(String.class), String.valueOf(criteria.getValue()));
         }
         if(criteria.getOperator().equals("<")){
-            return builder.lessThan(root.get(criteria.getKey()), String.valueOf(criteria.getValue()));
+            if(root.get(criteria.getKey()).getJavaType().getSuperclass() == Number.class){
+                return builder.lessThan(root.get(criteria.getKey()), ((Number)criteria.getValue()).doubleValue());
+            }
+            return builder.lessThan(root.get(criteria.getKey()).as(String.class), String.valueOf(criteria.getValue()));
         }
         if(criteria.getOperator().equals("in")){
             Object[] valuesList = ((List) ((TypedValue)criteria.getValue()).getValue()).toArray();
